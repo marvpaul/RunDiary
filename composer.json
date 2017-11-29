@@ -1,0 +1,7 @@
+{
+    "name": "marvin/myawesomerundiary",
+    "description": "A run diary",
+    "require": {
+        "twig/twig": "^2.4"
+    }
+}
