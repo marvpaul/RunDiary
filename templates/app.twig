@@ -3,10 +3,13 @@
 
     <div class="row">
         <div class="overview">
-            overview
+            {{ include('overview.twig') }}
         </div>
         <div class="diary">
-            Diary
+            {{ include('diary.twig') }}
+        </div>
+        <div class="newEntry">
+            {{ include('newEntryForm.twig') }}
         </div>
     </div>
 {% endblock %}
