@@ -1,6 +1,7 @@
 {% extends "base.twig" %}
 {% block content %}
 
+    <div class="breadcrumb">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
@@ -13,18 +14,31 @@
             <a class="nav-link" data-toggle="tab" href="#new-entry-tab" role="tab">New entry</a>
         </li>
     </ul>
+    </div>
 
     <!-- Tab panes -->
+
     <div class="tab-content">
         <div class="overview col-12 tab-pane active" id="overview-tab" role="tabpanel">
+            <div class="card text-white bg-primary">
+                <div class="card-body" id="overview">
+                </div>
+            </div>
         </div>
         <div class="diary col-12 tab-pane" id="diary-tab" role="tabpanel">
+            <div class="card text-white bg-primary">
+                <div class="card-body" id="diary">
+                </div>
+            </div>
         </div>
         <div class="newEntry col-12 tab-pane" id="new-entry-tab" role="tabpanel">
-            {{ include('newEntryForm.twig') }}
+            <div class="card text-white bg-primary">
+                <div class="card-body" id="entry">
+                    {{ include('newEntryForm.twig') }}
+                </div>
+            </div>
+
         </div>
     </div>
-    <div class="row">
 
-    </div>
 {% endblock %}

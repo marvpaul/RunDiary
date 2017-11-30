@@ -1,4 +1,3 @@
-var data = null;
 $(document).ready(function() {
     load_data();
 });
@@ -8,7 +7,7 @@ function load_data(){
         type: "GET",
         url: "diary.php",
         success: function( response ) {
-            $('#diary-tab').html(response);
+            $('#diary').html(response);
         }
     });
 
@@ -16,7 +15,7 @@ function load_data(){
         type: "GET",
         url: "overview.php",
         success: function( response ) {
-            $('#overview-tab').html(response);
+            $('#overview').html(response);
         }
     });
 }

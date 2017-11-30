@@ -1,6 +1,6 @@
 <?php
     function sortFunction( $a, $b ) {
-        return strtotime($b) - strtotime($a);
+        return strtotime($a) - strtotime($b);
     }
 
     function getAvgSpeed($time, $distance){
@@ -13,9 +13,19 @@
         return $sec;
     }
 
-    //Load json from data.json and decode to assoc array
-    $json_data = file_get_contents('data.json');
-    $json_data = json_decode($json_data, true);
+    function loadJSON(){
+        //Load json from data.json and decode to assoc array
+        $json_data = file_get_contents('data.json');
+        return json_decode($json_data, true);
+
+    }
+
+    function saveJSON($json_data){
+        file_put_contents("data.json", json_encode($json_data));
+    }
+
+
+    $json_data = loadJSON();
 
     //Parse form data and convert the time
     $time_in_sec = TimeToSec($_POST["time"]);
@@ -43,11 +53,11 @@
                 break;
             }
         }
-        //Okay, set new entry instead of replacing one
+        //Set new entry instead of replacing one
         if(!$setted){
             $json_data[$date] = $entry;
             uksort($json_data, "sortFunction");
         }
-        file_put_contents("data.json", json_encode($json_data));
+        saveJSON($json_data);
     }
     echo "true";
