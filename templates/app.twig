@@ -1,15 +1,30 @@
 {% extends "base.twig" %}
 {% block content %}
 
-    <div class="row">
-        <div class="overview">
-            {{ include('overview.twig') }}
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#overview-tab" role="tab">Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#diary-tab" role="tab">Detailed</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#new-entry-tab" role="tab">New entry</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="overview col-12 tab-pane active" id="overview-tab" role="tabpanel">
         </div>
-        <div class="diary">
-            {{ include('diary.twig') }}
+        <div class="diary col-12 tab-pane" id="diary-tab" role="tabpanel">
         </div>
-        <div class="newEntry">
+        <div class="newEntry col-12 tab-pane" id="new-entry-tab" role="tabpanel">
             {{ include('newEntryForm.twig') }}
         </div>
+    </div>
+    <div class="row">
+
     </div>
 {% endblock %}
