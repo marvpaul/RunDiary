@@ -15,6 +15,9 @@ function load_data(){
         url: "diary.php",
         success: function( response ) {
             $('#diary').html(response);
+            $('.delete-button').click(function () {
+                deleteEntry(this.id);
+            });
         }
     });
 
@@ -26,6 +29,25 @@ function load_data(){
         }
     });
 }
+
+function deleteEntry(date){
+    $.ajax( {
+        type: "POST",
+        url: "delete.php",
+        data: {
+            'date' : date
+        },
+        success: function( response ) {
+            if(response == "true"){
+                alert("Success");
+            } else{
+                alert("Failed");
+            }
+            load_data();
+        }
+    });
+}
+
 
 /**
  * Click handler for submit a new entry
