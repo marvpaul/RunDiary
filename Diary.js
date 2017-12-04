@@ -32,6 +32,14 @@ $("#submit-entry").click( function() {
     let isValidDistance = !isNaN(distance) && distance != "";
     let isNotNullAndPositive = true;
 
+    let time = $('#input-time').val();
+    let validTimeFormat = isValidTimeFormat(time);
+    let timeIsNullOrNegative = false;
+
+    if(validTimeFormat){
+        timeIsNullOrNegative = timeNullOrNegative(time);
+    }
+
     if(isDate){
         dateIsNotInFutre = dateNotInFuture(date);
     }
@@ -40,9 +48,7 @@ $("#submit-entry").click( function() {
         isNotNullAndPositive = distanceIsNotNullAndPositive(distance);
     }
 
-
-
-    if(isDate && dateIsNotInFutre && isValidDistance && isNotNullAndPositive){
+    if(isDate && dateIsNotInFutre && isValidDistance && isNotNullAndPositive && validTimeFormat && !timeIsNullOrNegative){
         $.ajax( {
             type: "POST",
             url: "save.php",
@@ -67,21 +73,57 @@ $("#submit-entry").click( function() {
         if(!isNotNullAndPositive){
             errMess += "Distance is null or negative <br>";
         }
+        if(!validTimeFormat){
+            errMess += "The given time format is not valid <br>";
+        }
+        if(timeIsNullOrNegative){
+            errMess += "The given time is null or negative <br>";
+        }
         showMess(errMess, true);
     }
 
 } );
 
-function showMess(mess, err){
-    $('#form-submit-mess').css("display", "inherit");
-    if(err){
-        $('#form-submit-mess').removeClass( "alert-success" );
-        $('#form-submit-mess').addClass("alert-danger");
-    } else{
-        $('#form-submit-mess').addClass( "alert-success" );
-        $('#form-submit-mess').removeClass("alert-danger");
+function timeNullOrNegative(time){
+    splitted_time_vals = time.split(":");
+    for(i = 0; i < splitted_time_vals.length; i++){
+        if(splitted_time_vals[i] <= 0){
+            return true;
+        }
     }
-    $('#form-submit-mess').html(mess);
+    return false;
+}
+
+/**
+ * Simply checks if a give time has the format number:number:number
+ * @param time
+ * @returns {boolean}
+ */
+function isValidTimeFormat(time){
+    let reg = /^[-]?[0-9]*:[-]?[0-9]*:[-]?[0-9]*$/;
+    if(time.match(reg)){
+        splitted_time_vals = time.split(":");
+        for(i = 0; i < splitted_time_vals.length; i++){
+            if(isNaN(splitted_time_vals[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+function showMess(mess, err){
+    let formMess = $('#form-submit-mess');
+    formMess.css("display", "inherit");
+    if(err){
+        formMess.removeClass( "alert-success" );
+        formMess.addClass("alert-danger");
+    } else{
+        formMess.addClass( "alert-success" );
+        formMess.removeClass("alert-danger");
+    }
+    formMess.html(mess);
     clearTimeout(timeOut);
     timeOut = setTimeout(hideMess, 5000);
 }
