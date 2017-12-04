@@ -39,9 +39,10 @@ function deleteEntry(date){
         },
         success: function( response ) {
             if(response == "true"){
-                alert("Success");
+                showMess("Sucessfully deleted", false, $('#diaryMess'));
+
             } else{
-                alert("Failed");
+                showMess("Sth went wrong. Network connection established?", true, $('#diaryMess'));
             }
             load_data();
         }
@@ -86,7 +87,7 @@ $("#submit-entry").click( function() {
             data: $("form").serialize(),
             success: function( response ) {
                 load_data();
-                showMess("Entry was submitted sucessfully.", false);
+                showMess("Entry was submitted sucessfully.", false, $('#form-submit-mess'));
             }
         });
         return false;
@@ -134,7 +135,7 @@ function handleSubmitErr(isDate, dateIsNotInFutre, isValidDistance, isNotNullAnd
     if(timeIsNullOrNegative){
         errMess += "The given time is null or negative <br>";
     }
-    showMess(errMess, true);
+    showMess(errMess, true, $('#form-submit-mess'));
 }
 
 /**
@@ -142,26 +143,27 @@ function handleSubmitErr(isDate, dateIsNotInFutre, isValidDistance, isNotNullAnd
  * @param mess the message
  * @param err true in case the mess is an error --> The message will be red
  */
-function showMess(mess, err){
-    let formMess = $('#form-submit-mess');
+function showMess(mess, err, formMess){
     formMess.css("display", "inherit");
     if(err){
         formMess.removeClass( "alert-success" );
         formMess.addClass("alert-danger");
     } else{
-        formMess.addClass( "alert-success" );
         formMess.removeClass("alert-danger");
+        formMess.addClass( "alert-success" );
     }
     formMess.html(mess);
     clearTimeout(timeOut);
-    timeOut = setTimeout(hideMess, 5000);
+    timeOut = setTimeout(function(){
+        hideMess(formMess)
+    } , 5000);
 }
 
 /**
  * Simply hides the last shown message
  */
-function hideMess(){
-    $('#form-submit-mess').css("display", "none");
+function hideMess(mess){
+    mess.css("display", "none");
 }
 
 
