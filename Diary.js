@@ -5,6 +5,10 @@ $(document).ready(function() {
     hideMess();
 });
 
+/**
+ * Method to load the data via Ajax request
+ * This method should be executed each time a new entry is submitted and at the beginning
+ */
 function load_data(){
     $.ajax( {
         type: "GET",
@@ -23,6 +27,9 @@ function load_data(){
     });
 }
 
+/**
+ * Click handler for submit a new entry
+ */
 $("#submit-entry").click( function() {
     let date = $('#input-date').val();
     let isDate = validate_date(date);
@@ -48,7 +55,9 @@ $("#submit-entry").click( function() {
         isNotNullAndPositive = distanceIsNotNullAndPositive(distance);
     }
 
-    if(isDate && dateIsNotInFutre && isValidDistance && isNotNullAndPositive && validTimeFormat && !timeIsNullOrNegative){
+    let entryIsOkay = isDate && dateIsNotInFutre && isValidDistance && isNotNullAndPositive && validTimeFormat && !timeIsNullOrNegative;
+
+    if(entryIsOkay){
         $.ajax( {
             type: "POST",
             url: "save.php",
@@ -60,28 +69,8 @@ $("#submit-entry").click( function() {
         });
         return false;
     } else{
-        let errMess = "";
-        if(!isDate){
-            errMess += "Date is not valid <br>";
-        }
-        if(!dateIsNotInFutre){
-            errMess += "Date is in future <br>";
-        }
-        if(!isValidDistance){
-            errMess += "Distance is not a valid number <br>";
-        }
-        if(!isNotNullAndPositive){
-            errMess += "Distance is null or negative <br>";
-        }
-        if(!validTimeFormat){
-            errMess += "The given time format is not valid <br>";
-        }
-        if(timeIsNullOrNegative){
-            errMess += "The given time is null or negative <br>";
-        }
-        showMess(errMess, true);
+        handleSubmitErr(isDate, dateIsNotInFutre, isValidDistance, isNotNullAndPositive, validTimeFormat, timeIsNullOrNegative);
     }
-
 } );
 
 function timeNullOrNegative(time){
@@ -95,24 +84,42 @@ function timeNullOrNegative(time){
 }
 
 /**
- * Simply checks if a give time has the format number:number:number
- * @param time
- * @returns {boolean}
+ * In case there are any errors while submitting an entry, create a certain error mess
+ * @param isDate true in case the entered date was valid
+ * @param dateIsNotInFutre true in case the entered date is in future --> not allowed
+ * @param isValidDistance true in case the entered distance is valid
+ * @param isNotNullAndPositive true in case the distance is not null and positive
+ * @param validTimeFormat true in case the entered time format is valid
+ * @param timeIsNullOrNegative true in case the time is null or negative
  */
-function isValidTimeFormat(time){
-    let reg = /^[-]?[0-9]*:[-]?[0-9]*:[-]?[0-9]*$/;
-    if(time.match(reg)){
-        splitted_time_vals = time.split(":");
-        for(i = 0; i < splitted_time_vals.length; i++){
-            if(isNaN(splitted_time_vals[i])){
-                return false;
-            }
-        }
-        return true;
+function handleSubmitErr(isDate, dateIsNotInFutre, isValidDistance, isNotNullAndPositive, validTimeFormat, timeIsNullOrNegative){
+    let errMess = "";
+    if(!isDate){
+        errMess += "Date is not valid <br>";
     }
-    return false;
+    if(!dateIsNotInFutre){
+        errMess += "Date is in future <br>";
+    }
+    if(!isValidDistance){
+        errMess += "Distance is not a valid number <br>";
+    }
+    if(!isNotNullAndPositive){
+        errMess += "Distance is null or negative <br>";
+    }
+    if(!validTimeFormat){
+        errMess += "The given time format is not valid <br>";
+    }
+    if(timeIsNullOrNegative){
+        errMess += "The given time is null or negative <br>";
+    }
+    showMess(errMess, true);
 }
 
+/**
+ * Show a certain message on the site
+ * @param mess the message
+ * @param err true in case the mess is an error --> The message will be red
+ */
 function showMess(mess, err){
     let formMess = $('#form-submit-mess');
     formMess.css("display", "inherit");
@@ -128,8 +135,31 @@ function showMess(mess, err){
     timeOut = setTimeout(hideMess, 5000);
 }
 
+/**
+ * Simply hides the last shown message
+ */
 function hideMess(){
     $('#form-submit-mess').css("display", "none");
+}
+
+
+/**
+ * Simply checks if a give time has a certain format
+ * @param time the entered time
+ * @returns {boolean} true in case the entered date has format: format number:number:number
+ */
+function isValidTimeFormat(time){
+    let reg = /^[-]?[0-9]*:[-]?[0-9]*:[-]?[0-9]*$/;
+    if(time.match(reg)){
+        splitted_time_vals = time.split(":");
+        for(i = 0; i < splitted_time_vals.length; i++){
+            if(isNaN(splitted_time_vals[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 function validate_date(date){
